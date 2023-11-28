@@ -4,111 +4,144 @@ using UnityEngine;
 
 public class Spawning : MonoBehaviour
 {
+    //PROBLEMS:
+    //could make different sprites for the branches
+    //THE RIGHT BRANCH IS  NOT FLIPPED.
+    //no player model
+    //no player script
+    //no enemy / hazards to avoid.
 
-    //private GameObject[] branchArray;
+
+
+
+
+    //GameObjects
     public GameObject branchL;
-
-    //add branchR;
-
+    public GameObject branchC;
+    public GameObject branchR;
     public GameObject trunk;
+
+
+    //Position variables
     public float leftEdge;
+    public float centerPoint;
     public float rightEdge;
     public float branchWidth;
+    public float LeftValue;
+    public float RightValue;
 
-    
+
+    //Catch coRoutine
+    private bool shouldStopCoroutine = false;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
-        //branchArray = GameObject.FindGameObjectsWithTag("branch");
-        //Instantiate(branch, new Vector2(-2, 0), Quaternion.identity);
-
-
-
 
         getDimensions();
-
-        /*
-        float randomOffset1 = Random.Range(-1f, 1f);
-        float something1 = (Mathf.Abs(trunkX - branchWidth)) * randomOffset1;
-        
-
-        float randomOffset2 = Random.Range(-1f, 1f);
-        float something2 = (Mathf.Abs(trunkX - branchWidth)) * randomOffset2;
-
-        float randomOffset3 = Random.Range(-1f, 1f);
-        float something3 = (Mathf.Abs(trunkX - branchWidth)) * randomOffset3;
-
-
-        GameObject branch1 = Instantiate(branch, new Vector2(-3, 0), Quaternion.identity);
-        GameObject branch2 = Instantiate(branch, new Vector2(something2, 3), Quaternion.identity);
-        GameObject branch3 = Instantiate(branch, new Vector2(something3, 5), Quaternion.identity);
-
-        Debug.Log(branch1.transform.position.x);
-        Debug.Log(branch2.transform.position.x);
-        Debug.Log(branch3.transform.position.x);
-
-
-         * all of this is testing.
-         * need to make functions for picking and spawning the branches.
-         * create if statement for left or right side of trunk (determine what prefab to spawn)
-         * create prefab for the middle of the tree (and the if statements for it)
-         * */
-
+        StartCoroutine(BranchSpawning());
 
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        
-    }
-
-    void spawnBranch(float x,float y)
-    {
-        Instantiate(branchL, new Vector2(0,3), Quaternion.identity);
-        Debug.Log(y);
-        Debug.Log(x);
-        Debug.Log("spawnBranch called.");
+        if (Time.time >= 5f)
+        {
+            shouldStopCoroutine = true;
+        }
 
     }
-    /*
-    float pickBranch()
-    {
-        float offset = Random.Range(-1f, 1f);
-        float xValue = (this.transform.position.x - branch.transform.position.x)
-        
-        Debug.Log("pickBranch called.");
-        return
 
-    }
-    */
 
+    //Get dimensions of the prefabs and calculates the significant points
     public void getDimensions()
     {
         SpriteRenderer branchLSprite = branchL.GetComponent<SpriteRenderer>();
         //SpriteRenderer branchRSprite = branchR.GetComponent<SpriteRenderer>();
         SpriteRenderer trunkSprite = this.GetComponent<SpriteRenderer>();
-
-        /*
-         float branchWidth = branchSprite.bounds.size.x;
-        float trunkWidth = this.GetComponent<SpriteRenderer>().bounds.size.x;
-        */
-
-        float branchLWidth = branchLSprite.bounds.extents.x;
-        //float branchRWidth;
-
+        branchWidth = branchLSprite.bounds.extents.x;
         leftEdge = trunkSprite.bounds.min.x;
+        centerPoint = trunkSprite.transform.position.x;
         rightEdge = trunkSprite.bounds.max.x;
+        LeftValue = leftEdge - branchWidth;
+        RightValue = rightEdge + branchWidth;
+
+    }
+
+    //Determines where the branches will get spawned.
+    public float randomDecision()
+    {
+        float decision = Mathf.RoundToInt(Random.Range(1f, 4f));
+        Debug.Log(decision);
+
+        if (decision == 1)
+        {
+            decision = LeftValue;
+        }
+        else if (decision == 3)
+        {
+            decision = RightValue;
+        }
+        else
+        {
+            decision = centerPoint;
+        }
+
+
+        return decision;
+    }
+
+
+    //Creates the branches in spot picked.
+    public void Creator(GameObject branch, float position)
+    {
+        Instantiate(branch, new Vector2(position, 6), Quaternion.identity);
+    }
+
+
+    //Determines how often branches get picked / spawned.
+    IEnumerator BranchSpawning()
+    {
+        while (!shouldStopCoroutine)
+        {
+
+            float branchPosition = 0;
+            GameObject branchPicked = null;
+            // Call GetRandomValue and get the return value
+            float randomValue = randomDecision();
+            Debug.Log(randomValue);
+
+            if (randomValue == centerPoint)
+            {
+                branchPicked = branchC;
+                branchPosition = centerPoint;
+                Debug.Log("Center Branch picked");
+            }
+            
+            else if (randomValue == LeftValue)
+            {
+                branchPicked = branchL;
+                branchPosition = LeftValue;
+                Debug.Log("Left Branch picked");
+            }
+            else if (randomValue == RightValue)
+            {
+                branchPicked = branchR;
+                branchPosition = RightValue;
+                Debug.Log("Right Branch Picked");
+            }
 
 
 
+
+            Creator(branchPicked, branchPosition);
+            
+            // Wait for x seconds before the next iteration
+            yield return new WaitForSeconds(1f);
+        }
 
     }
 }
-
-
-//make function that takes the values in getdimensions() and does the calculations to find where the branches should spawn in.
-//!!!!!!!!!!!!!!!!!

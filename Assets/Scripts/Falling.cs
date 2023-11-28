@@ -16,9 +16,11 @@ public class Falling : MonoBehaviour
         // Update the position of the prefab
         transform.position = newPosition;
 
-        if (transform.position.y < -6)
+
+        //delete the object when it gets off screen
+        if (this.transform.position.y < -6)
         {
-            transform.position = new Vector2(transform.position.x, 6);
+            Destroy(gameObject);
         }
     }
 
