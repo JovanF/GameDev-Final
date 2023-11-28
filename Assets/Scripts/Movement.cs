@@ -1,16 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Movement : MonoBehaviour
 {
 
+
+    private float horizontalInput = 0;
     public float moveSpeed = 10f;
     public float jumpForce = 10f;
-    private float horizontalInput = 0;
-    private bool grounded = false;
+    private bool canJump = true;
     private Rigidbody2D rb;
-    public LayerMask groundlayer;
+
 
 
     // Start is called before the first frame update
@@ -20,7 +22,7 @@ public class Movement : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
@@ -29,20 +31,33 @@ public class Movement : MonoBehaviour
         // Move the character
         transform.position = newPosition;
 
-        //Ground check
-        grounded = Physics2D.Raycast(transform.position, Vector2.down, 0.1f);
+        //destroys object when it gets off screen.
 
-        if (grounded && Input.GetButtonDown("Jump"))
+        if (this.transform.position.y < -6)
+        {
+            Destroy(gameObject);
+            //swap to scene /Or figure out how to bring up game over ui
+
+        }
+
+        if (canJump && Input.GetButtonDown("Jump"))
         {
             Jump();
         }
-
-
     }
 
     void Jump()
     {
-        Debug.Log("jumping");
+        rb.velocity = new Vector2(rb.velocity.x, 0f);
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        canJump = false;
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("branch"))
+        {
+            canJump = true;
+        }
     }
 }

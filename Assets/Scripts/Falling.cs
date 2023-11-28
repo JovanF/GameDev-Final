@@ -6,8 +6,8 @@ public class Falling : MonoBehaviour
 {
 
     //public Transform prefabToMove; // Assuming the prefab is a 2D object with a Transform component
-    public float moveSpeed = 2.0f; // Adjust the speed as needed
-
+    public float moveSpeed = 2.0f;
+    
     private void Update()
     {
         // Calculate the new position for the prefab
@@ -16,9 +16,11 @@ public class Falling : MonoBehaviour
         // Update the position of the prefab
         transform.position = newPosition;
 
-        if (transform.position.y < -6)
+
+        //delete the object when it gets off screen
+        if (this.transform.position.y < -6)
         {
-            transform.position = new Vector2(transform.position.x, 6);
+            Destroy(gameObject);
         }
     }
 
