@@ -6,8 +6,15 @@ public class Falling : MonoBehaviour
 {
 
     //public Transform prefabToMove; // Assuming the prefab is a 2D object with a Transform component
-    public float moveSpeed = 2.0f; // Adjust the speed as needed
+    public float moveSpeed = 2.0f;
+    public float customGravity = -9.8f;
 
+
+    private void Start()
+    {
+        Physics2D.gravity = new Vector2(0f, customGravity);
+
+    }
     private void Update()
     {
         // Calculate the new position for the prefab

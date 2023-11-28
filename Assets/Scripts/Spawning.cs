@@ -21,6 +21,8 @@ public class Spawning : MonoBehaviour
     public GameObject branchR;
     public GameObject trunk;
 
+    public float branchDelay = 1f;
+
 
     //Position variables
     public float leftEdge;
@@ -48,10 +50,7 @@ public class Spawning : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Time.time >= 5f)
-        {
-            shouldStopCoroutine = true;
-        }
+        
 
     }
 
@@ -118,20 +117,17 @@ public class Spawning : MonoBehaviour
             {
                 branchPicked = branchC;
                 branchPosition = centerPoint;
-                Debug.Log("Center Branch picked");
             }
             
             else if (randomValue == LeftValue)
             {
                 branchPicked = branchL;
                 branchPosition = LeftValue;
-                Debug.Log("Left Branch picked");
             }
             else if (randomValue == RightValue)
             {
                 branchPicked = branchR;
                 branchPosition = RightValue;
-                Debug.Log("Right Branch Picked");
             }
 
 
@@ -140,7 +136,7 @@ public class Spawning : MonoBehaviour
             Creator(branchPicked, branchPosition);
             
             // Wait for x seconds before the next iteration
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(branchDelay);
         }
 
     }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Movement : MonoBehaviour
 {
@@ -11,12 +12,14 @@ public class Movement : MonoBehaviour
     private bool grounded = false;
     private Rigidbody2D rb;
     public LayerMask groundlayer;
+    public float customGravity = -9.8f;
 
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        Physics2D.gravity = new Vector2(0f, customGravity);
     }
 
     // Update is called once per frame
@@ -31,10 +34,18 @@ public class Movement : MonoBehaviour
 
         //Ground check
         grounded = Physics2D.Raycast(transform.position, Vector2.down, 0.1f);
-
         if (grounded && Input.GetButtonDown("Jump"))
         {
             Jump();
+        }
+
+
+
+        if (this.transform.position.y < -6)
+        {
+            Destroy(gameObject);
+            //swap to scene /Or figure out how to bring up game over ui
+
         }
 
 
