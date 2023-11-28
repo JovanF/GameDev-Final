@@ -6,24 +6,23 @@ using UnityEngine.SceneManagement;
 public class Movement : MonoBehaviour
 {
 
+
+    private float horizontalInput = 0;
     public float moveSpeed = 10f;
     public float jumpForce = 10f;
-    private float horizontalInput = 0;
-    private bool grounded = false;
+    private bool canJump = true;
     private Rigidbody2D rb;
-    public LayerMask groundlayer;
-    public float customGravity = -9.8f;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        Physics2D.gravity = new Vector2(0f, customGravity);
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
@@ -32,14 +31,7 @@ public class Movement : MonoBehaviour
         // Move the character
         transform.position = newPosition;
 
-        //Ground check
-        grounded = Physics2D.Raycast(transform.position, Vector2.down, 0.1f);
-        if (grounded && Input.GetButtonDown("Jump"))
-        {
-            Jump();
-        }
-
-
+        //destroys object when it gets off screen.
 
         if (this.transform.position.y < -6)
         {
@@ -48,12 +40,24 @@ public class Movement : MonoBehaviour
 
         }
 
-
+        if (canJump && Input.GetButtonDown("Jump"))
+        {
+            Jump();
+        }
     }
 
     void Jump()
     {
-        Debug.Log("jumping");
+        rb.velocity = new Vector2(rb.velocity.x, 0f);
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        canJump = false;
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("branch"))
+        {
+            canJump = true;
+        }
     }
 }

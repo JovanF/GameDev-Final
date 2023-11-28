@@ -5,9 +5,6 @@ using UnityEngine;
 public class Spawning : MonoBehaviour
 {
 
-
-
-
     //GameObjects
     public GameObject branchL;
     public GameObject branchC;
@@ -24,11 +21,6 @@ public class Spawning : MonoBehaviour
     public float branchWidth;
     public float LeftValue;
     public float RightValue;
-
-
-    //Catch coRoutine
-    private bool shouldStopCoroutine = false;
-
 
 
     // Start is called before the first frame update
@@ -63,19 +55,96 @@ public class Spawning : MonoBehaviour
 
     }
 
+
+
+    // Determines where the branches will get spawned.
+    public float randomDecision()
+    {
+        // Adjust the weights based on your preference
+        //lower weight = less chance to be spawned
+        float weightLeft = 1f;
+        float weightCenter = 0.6f;
+        float weightRight = 1f;
+
+        // Calculate the total weight
+        float totalWeight = weightLeft + weightCenter + weightRight;
+
+        // Generate a random value within the total weight
+        float randomValue = Random.Range(0f, totalWeight);
+        Debug.Log(randomValue);
+
+        // Determine the selected branch based on weights
+        if (randomValue < weightLeft)
+        {
+            return LeftValue;
+        }
+        else if (randomValue < weightLeft + weightCenter)
+        {
+            return centerPoint;
+        }
+        else
+        {
+            return RightValue;
+        }
+    }
+
+    //Creates the branches in spot picked.
+    public void Creator(GameObject branch, float position)
+    {
+        Instantiate(branch, new Vector2(position, 6), Quaternion.identity);
+    }
+
+    // Determines how often branches get picked / spawned.
+    IEnumerator BranchSpawning()
+    {
+        while (true)
+        {
+            float branchPosition = 0;
+            float randomValue = randomDecision();
+
+            GameObject branchPicked = null;
+
+            if (randomValue == centerPoint)
+            {
+                branchPicked = branchC;
+                branchPosition = centerPoint;
+            }
+            else if (randomValue == LeftValue)
+            {
+                branchPicked = branchL;
+                branchPosition = LeftValue;
+            }
+            else if (randomValue == RightValue)
+            {
+                branchPicked = branchR;
+                branchPosition = RightValue;
+            }
+
+            // Create branch
+            Creator(branchPicked, branchPosition);
+
+            // Wait for x seconds before the next iteration
+            yield return new WaitForSeconds(branchDelay);
+        }
+    }
+
+
+
+    /* Old code
+    
     //Determines where the branches will get spawned.
     public float randomDecision()
     {
         float decision = Mathf.RoundToInt(Random.Range(1f, 4f));
-        Debug.Log(decision);
+        
 
         if (decision == 1)
         {
             decision = LeftValue;
         }
         else if (decision == 3)
-        {
-            decision = RightValue;
+            {
+                decision = RightValue;
         }
         else
         {
@@ -86,25 +155,18 @@ public class Spawning : MonoBehaviour
         return decision;
     }
 
-
-    //Creates the branches in spot picked.
-    public void Creator(GameObject branch, float position)
-    {
-        Instantiate(branch, new Vector2(position, 6), Quaternion.identity);
-    }
-
-
     //Determines how often branches get picked / spawned.
     IEnumerator BranchSpawning()
     {
-        while (!shouldStopCoroutine)
+        while (true)
         {
 
             float branchPosition = 0;
-            GameObject branchPicked = null;
             // Call GetRandomValue and get the return value
             float randomValue = randomDecision();
-            Debug.Log(randomValue);
+
+            GameObject branchPicked = null;
+
 
             if (randomValue == centerPoint)
             {
@@ -123,14 +185,14 @@ public class Spawning : MonoBehaviour
                 branchPosition = RightValue;
             }
 
-
-
-
+            //create branch
             Creator(branchPicked, branchPosition);
-            
+
+
             // Wait for x seconds before the next iteration
             yield return new WaitForSeconds(branchDelay);
         }
 
     }
+    */
 }
