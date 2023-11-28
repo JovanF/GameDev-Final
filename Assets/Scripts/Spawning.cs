@@ -4,13 +4,6 @@ using UnityEngine;
 
 public class Spawning : MonoBehaviour
 {
-    //PROBLEMS:
-    //could make different sprites for the branches
-    //THE RIGHT BRANCH IS  NOT FLIPPED.
-    //no player model
-    //no player script
-    //no enemy / hazards to avoid.
-
 
 
 
