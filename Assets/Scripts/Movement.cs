@@ -44,6 +44,7 @@ public class Movement : MonoBehaviour
         {
             Jump();
         }
+
     }
 
     void Jump()
@@ -58,6 +59,11 @@ public class Movement : MonoBehaviour
         if (collision.gameObject.CompareTag("branch"))
         {
             canJump = true;
+        }
+
+        if (collision.gameObject.CompareTag("collider"))
+        {
+            SceneManager.LoadScene("EndScene");
         }
     }
 }
