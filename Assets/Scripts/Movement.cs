@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
+
 
 public class Movement : MonoBehaviour
 {
@@ -12,6 +14,9 @@ public class Movement : MonoBehaviour
     public float jumpForce = 10f;
     private bool canJump = true;
     private Rigidbody2D rb;
+
+    public TMP_Text scoreText;
+    private int score = 0;
 
 
 
@@ -24,6 +29,7 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
         // Calculate the new position
@@ -59,11 +65,24 @@ public class Movement : MonoBehaviour
         if (collision.gameObject.CompareTag("branch"))
         {
             canJump = true;
+            score++;
+            UpdateScoreText();
+
         }
 
         if (collision.gameObject.CompareTag("collider"))
         {
+            PlayerPrefs.SetInt("Score", score);
+            PlayerPrefs.Save();
             SceneManager.LoadScene("EndScene");
         }
     }
+
+    void UpdateScoreText()
+    {
+
+        scoreText.text = "Score: " + score.ToString();
+
+    }
+
 }

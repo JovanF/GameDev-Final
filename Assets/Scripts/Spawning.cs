@@ -35,7 +35,7 @@ public class Spawning : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
 
     }
 
@@ -71,7 +71,6 @@ public class Spawning : MonoBehaviour
 
         // Generate a random value within the total weight
         float randomValue = Random.Range(0f, totalWeight);
-        Debug.Log(randomValue);
 
         // Determine the selected branch based on weights
         if (randomValue < weightLeft)
